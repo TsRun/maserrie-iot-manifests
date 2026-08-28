@@ -1,0 +1,22 @@
+---
+# The K3d cluster maps host port 8888 to the Traefik ingress (port 80), so
+# this rule makes the application answer on http://localhost:8888/.
+# It has no `host:` field, so it is the default route of the cluster; the
+# Argo CD ingress (host argocd.localhost) is more specific and wins for the UI.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: playground
+  namespace: dev
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: playground
+                port:
+                  number: 8888
